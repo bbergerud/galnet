@@ -1,11 +1,10 @@
 import unittest
 import torch
-import torch.nn as nn
 import galnet.utils as utils
 
 class TestUtils(unittest.TestCase):
     def test_count_parameters(self):
-        model = nn.Linear(10,10, bias=False)
+        model = torch.nn.Linear(10,10, bias=False)
         self.assertEqual(utils.count_parameters(model), 100)
 
     def test_get_merged_channels(self):
@@ -19,6 +18,7 @@ class TestUtils(unittest.TestCase):
         with self.assertRaises(ValueError):
             for op in ['add', 'mul']:
                 utils.get_merged_channels([5,3],merge_operation=op)
+        # Test exception for invalid merge operation
         with self.assertRaises(NotImplementedError):
             utils.get_merged_channels([5,3], merge_operation='N/A')
 
