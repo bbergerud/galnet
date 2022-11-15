@@ -104,8 +104,6 @@ def get_merged_channels(
     >>> print(get_merged_channels([5,4,3,2,1], merge_operation='concat'))
     15
     """
-    channels = list(flatten(channels))
-
     if merge_operation not in merge_operations.keys():
         raise NotImplementedError('Not a valid merge operation. Should be one of: {}'.format(merge_operations.keys()))
     elif merge_operation in ['cat', 'concat']:
