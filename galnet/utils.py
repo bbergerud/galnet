@@ -74,7 +74,7 @@ def get_merged_channels(
 
     Parameters
     ----------
-    *channels : int
+    channels : List[int]
         A sequence of channel sizes to combine. 
 
     merge_operation : str
