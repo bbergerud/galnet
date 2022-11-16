@@ -25,6 +25,10 @@ PreactivationResidualBlock
         (N - 1) × (BN -> Pad -> Conv) -> BN -> nonlinear -> Pad -> Conv
     which is then added to the input.
 
+SkipBlock
+    A skip block that simply returns the input. May be useful
+    for create skip connections that involve no operations.
+
 Methods
 -------
 block_wrapper(block, num_repeats, **kwargs):
