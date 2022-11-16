@@ -8,6 +8,7 @@ modules = (
     "galnet.layers.padding",
     "galnet.layers.recurrent",
     "galnet.layers.upsample",
+    "galnet.optimize.assignment.algorithms",
     "galnet.utils",
 )
 
