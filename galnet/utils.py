@@ -160,7 +160,3 @@ def get_padding(
     torch.Size([1, 1, 10, 10])
     """
     return (kernel_size + (kernel_size - 1)*(dilation - 1))//2
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

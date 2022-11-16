@@ -134,7 +134,3 @@ class WrapPad2d(nn.Module):
 
     def forward(self, input:torch.Tensor, **kwargs) -> torch.Tensor:
         return wrap_pad_2d(input, padding=self.padding, dim=self.dim)
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
