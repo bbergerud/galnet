@@ -3,6 +3,7 @@ import doctest
 
 modules = (
     "galnet.layers.blocks",
+    "galnet.layers.downsample",
     "galnet.layers.padding",
     "galnet.layers.recurrent",
     "galnet.layers.upsample",
