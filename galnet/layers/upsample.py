@@ -565,6 +565,6 @@ class BilinearUpsample2d(nn.Module):
         self.upsample = (WrapUpsampling2d if wrap_padding else nn.UpsamplingBilinear2d)(scale_factor=stride)
 
     def forward(self, input, *args, **kwargs):
-        if 'conv' in self.__dict__:
+        if 'conv' in self.__dict__['_modules']:
             input = self.conv(input)
         return self.upsample(input)
