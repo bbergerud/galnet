@@ -18,6 +18,10 @@ get_padding(kernel_size, dilation)
     not symmetric on each side, thus odd kernel sizes should generally
     be used.
 
+parse_parameter(input, length)
+    Takes a value or iterable collection of values and parses
+    the input to make sure it has the proper size.
+
 Variables
 ----------
 merge_operations : dict
@@ -28,9 +32,10 @@ merge_operations : dict
 
 import torch
 import torch.nn as nn
+from numbers import Number
 from dataops.utils import flatten
 from functools import reduce
-from typing import List
+from typing import List, Tuple, Union
 
 merge_operations = {
     'cat'   : lambda *x: torch.cat(tuple(flatten(x, torch.Tensor)), dim=1),
@@ -160,3 +165,48 @@ def get_padding(
     torch.Size([1, 1, 10, 10])
     """
     return (kernel_size + (kernel_size - 1)*(dilation - 1))//2
+
+def parse_parameter(
+    input:Union[Number, Tuple[Number], List[Number]],
+    length:int
+) -> Tuple[Number]:
+    """
+    Takes a value or iterable collection of values and parses
+    the input to make sure it has the proper size.
+
+    Parameter
+    ---------
+    input : number, tuple
+        The input values to parse. Should either be a single value
+        or a collection of values.
+    
+    length : int
+        The length of the output value.
+
+    Returns
+    -------
+    output : tuple
+        If input is a single value, then the value is returned as a tuple 
+        with length `length`. Otherwise, the input value is returned if
+        no exception is raised.
+
+    Raises
+    ------
+    ValueError
+        If input is an iterable but not of the proper length, then an
+        exception is raised.
+
+    Examples
+    --------
+    >>> from galnet.utils import parse_parameter
+    >>> parse_parameter(input=1, length=3)
+    (1, 1, 1)
+    >>> parse_parameter(input=(1,2,3), length=3)
+    (1, 2, 3)
+    """
+    if isinstance(input, (list, tuple)):
+        if len(input) != length:
+            raise ValueError(f"len({input}) != {length}")
+        return tuple(input)
+    else:
+        return (input,) * length

@@ -37,5 +37,11 @@ class TestUtils(unittest.TestCase):
                     )(x)
                     self.assertEqual(x.shape, y.shape)
 
+    def test_parse_parameter(self):
+        self.assertEqual(utils.parse_parameter(1,3), (1,1,1))
+        self.assertEqual(utils.parse_parameter([1,2],2), (1,2))
+        with self.assertRaises(ValueError):
+            utils.parse_parameter([1,2,3], 2)
+
 if __name__ == '__main__':
     unittest.main(exit=False)
