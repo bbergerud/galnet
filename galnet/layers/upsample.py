@@ -554,7 +554,7 @@ class BilinearUpsample2d(nn.Module):
     def __init__(self,
         in_channels:int,
         out_channels:int,
-        stride:int,
+        stride:int=2,
         wrap_padding:bool=False,
         **kwargs
     ):
