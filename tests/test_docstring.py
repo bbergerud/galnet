@@ -4,6 +4,7 @@ import doctest
 modules = (
     "galnet.layers.blocks",
     "galnet.layers.padding",
+    "galnet.layers.recurrent",
     "galnet.utils",
 )
 
