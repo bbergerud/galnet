@@ -5,6 +5,7 @@ modules = (
     "galnet.layers.blocks",
     "galnet.layers.padding",
     "galnet.layers.recurrent",
+    "galnet.layers.upsample",
     "galnet.utils",
 )
 
