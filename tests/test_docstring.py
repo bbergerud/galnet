@@ -2,8 +2,9 @@ import unittest
 import doctest
 
 modules = (
-    "galnet.utils",
+    "galnet.layers.blocks",
     "galnet.layers.padding",
+    "galnet.utils",
 )
 
 suite = unittest.TestSuite()
