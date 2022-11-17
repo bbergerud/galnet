@@ -19,11 +19,15 @@ PreactivationDownsample
     and change the number of channels. The sequence of operations is
         BN -> Nonlinear -> Pad -> Conv
 
-PreactivationPoolDownsample(nn.Module):
+PreactivationPoolDownsample
     Applies a pooling operation followed by a convolution to 
     reduce the spatial dimensions and change the number of
     channels. The sequence of operations is
         Pooling -> BN -> Nonlinear -> Pad -> Conv
+
+Pool2d
+    Applies a pooling operation. If the input channels are not equal to the 
+    output channels, then a 1x1 convolution is applied to match the channel sizes.
 """
 
 import torch
@@ -110,6 +114,9 @@ class ConvPoolDownsample(nn.Module):
     kernel_size : int
         The kernel size of the convolution
 
+    stride : int
+        The stride factor for downsampling
+
     dilation : int
         The dilation factor
 
@@ -128,23 +135,24 @@ class ConvPoolDownsample(nn.Module):
     >>> import torch
     >>> from galnet.layers.downsample import ConvPoolDownsample as Downsample
     >>> x = torch.randn(1,1,16,16)
-    >>> Downsample(in_channels=1, out_channels=1, pooling=torch.nn.MaxPool2d(2,2))(x).size()
+    >>> Downsample(in_channels=1, out_channels=1, stride=2, pooling=torch.nn.MaxPool2d)(x).size()
     torch.Size([1, 1, 8, 8])
     """
     def __init__(self,
         in_channels:int,
         out_channels:int,
         kernel_size:int = 3,
+        stride:int=2,
         dilation:int = 1,
         wrap_padding:bool = False,
         nonlinear:nn.Module = nn.ReLU(),
-        pooling:nn.Module = nn.MaxPool2d(2,2),
+        pooling:nn.Module = nn.MaxPool2d,
     ):
         super().__init__()
 
         Pad = WrapPad2d if wrap_padding else nn.ZeroPad2d
         self.block = nn.Sequential(
-            pooling,
+            pooling(stride,stride),
             Pad(padding=get_padding(kernel_size, dilation)),
             nn.Conv2d(
                 in_channels=in_channels,
@@ -239,6 +247,9 @@ class PreactivationPoolDownsample(nn.Module):
     kernel_size : int
         The kernel size of the convolution
 
+    stride : int
+        The stride factor for downsampling
+
     dilation : int
         The dilation factor
 
@@ -257,23 +268,24 @@ class PreactivationPoolDownsample(nn.Module):
     >>> import torch
     >>> from galnet.layers.downsample import PreactivationPoolDownsample as Downsample
     >>> x = torch.randn(1,1,16,16)
-    >>> Downsample(in_channels=1, out_channels=1, pooling=torch.nn.MaxPool2d(2,2))(x).size()
+    >>> Downsample(in_channels=1, out_channels=1, stride=2, pooling=torch.nn.MaxPool2d)(x).size()
     torch.Size([1, 1, 8, 8])
     """
     def __init__(self,
-        in_channels  : int,
-        out_channels : int,
-        kernel_size  : int = 3,
-        dilation     : int = 1,
-        wrap_padding : bool = False,
-        nonlinear    : nn.Module = nn.ReLU(),
-        pooling      : nn.Module = nn.MaxPool2d(2,2),
+        in_channels:int,
+        out_channels:int,
+        kernel_size:int = 3,
+        stride:int=2,
+        dilation:int = 1,
+        wrap_padding:bool = False,
+        nonlinear:nn.Module = nn.ReLU(),
+        pooling:nn.Module = nn.MaxPool2d,
     ):
         super().__init__()
 
         Pad = WrapPad2d if wrap_padding else nn.ZeroPad2d
         self.block = nn.Sequential(
-            pooling,
+            pooling(stride,stride),
             nn.BatchNorm2d(in_channels),
             nonlinear,
             Pad(padding=get_padding(kernel_size, dilation)),
@@ -302,6 +314,9 @@ class Pool2d(nn.Module):
     out_channels : int
         The number of output channels
 
+    stride : int
+        The stride factor for downsampling
+
     pooling : torch.nn.Module
         The pooling operation to apply
 
@@ -314,20 +329,21 @@ class Pool2d(nn.Module):
     >>> import torch
     >>> from galnet.layers.downsample import Pool2d as Downsample
     >>> x = torch.arange(16, dtype=torch.float32).reshape(1,1,4,4)
-    >>> Downsample(in_channels=1, out_channels=1, pooling=torch.nn.AvgPool2d(2,2))(x)
+    >>> Downsample(in_channels=1, out_channels=1, stride=2, pooling=torch.nn.AvgPool2d)(x)
     tensor([[[[ 2.5000,  4.5000],
               [10.5000, 12.5000]]]])
-    >>> Downsample(in_channels=1, out_channels=2, pooling=torch.nn.MaxPool2d(2,2))(x).size()
+    >>> Downsample(in_channels=1, out_channels=2, stride=2, pooling=torch.nn.MaxPool2d)(x).size()
     torch.Size([1, 2, 2, 2])
     """
     def __init__(self,
         in_channels:int,
         out_channels:int,
-        pooling:nn.Module = nn.MaxPool2d(2,2),
+        stride:int=2,
+        pooling:nn.Module = nn.MaxPool2d,
         **kwargs
     ):
         super().__init__()
-        self.pool = pooling
+        self.pool = pooling(stride, stride)
 
         if in_channels != out_channels:
             self.conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=1)
