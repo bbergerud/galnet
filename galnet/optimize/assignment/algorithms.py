@@ -1,8 +1,8 @@
 """
 Methods for identifying the optimal pair matchings given a cost matrix
 
-Methods
--------
+Functions
+---------
 first_come_first_serve(cost_matrix)
     Assigns the optimal matchings in order of the network output. Assumes
     that the output instance is the row and the target instance the column.
